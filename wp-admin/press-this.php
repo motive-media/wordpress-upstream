@@ -314,6 +314,20 @@ var photostorage = false;
 	do_action('admin_print_scripts');
 	do_action('admin_head');
 ?>
+	<style type="text/css">
+	#message {
+		margin: 10px 0;
+	}
+	#title,
+	.press-this #wphead {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.rtl.press-this #header-logo,
+	.rtl.press-this #wphead h1 {
+		float: right;
+	}
+	</style>
 	<script type="text/javascript">
 	var wpActiveEditor = 'content';
 
@@ -376,24 +390,15 @@ var photostorage = false;
 				function setup_photo_actions() {
 					jQuery('.close').click(function() {
 						jQuery('#extra-fields').hide();
-						jQuery('body').append( jQuery('#photo-add-url-div') );
 						jQuery('#extra-fields').html('');
 					});
 					jQuery('.refresh').click(function() {
 						photostorage = false;
-						jQuery('body').append( jQuery('#photo-add-url-div') );
 						show('photo');
 					});
 					jQuery('#photo-add-url').click(function(){
-						var container = jQuery('#img_container');
-
-						if ( container.children('#photo-add-url-div:visible').length ) {
-							container.children('a').show();
-							jQuery('#photo-add-url-div').hide();
-						} else {
-							container.children('a').hide();
-							container.append( jQuery('#photo-add-url-div').show() );
-						}
+						var form = jQuery('#photo-add-url-div').clone();
+						jQuery('#img_container').empty().append( form.show() );
 					});
 					jQuery('#waiting').hide();
 					jQuery('#extra-fields').show();
@@ -444,7 +449,7 @@ var photostorage = false;
 	});
 </script>
 </head>
-<body class="press-this wp-admin">
+<body class="press-this wp-admin<?php if ( is_rtl() ) echo ' rtl'; ?>">
 <form action="press-this.php?action=post" method="post">
 <div id="poststuff" class="metabox-holder">
 	<div id="side-sortables" class="press-this-sidebar">
