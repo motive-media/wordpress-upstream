@@ -466,18 +466,11 @@ EOD;
 
     function output($xml)
     {
-        $charset = function_exists('get_option') ? get_option('blog_charset') : '';
-        if ($charset)
-            $xml = '<?xml version="1.0" encoding="'.$charset.'"?>'."\n".$xml;
-        else
-            $xml = '<?xml version="1.0"?>'."\n".$xml;
+        $xml = '<?xml version="1.0"?>'."\n".$xml;
         $length = strlen($xml);
         header('Connection: close');
         header('Content-Length: '.$length);
-        if ($charset)
-            header('Content-Type: text/xml; charset='.$charset);
-        else
-            header('Content-Type: text/xml');
+        header('Content-Type: text/xml');
         header('Date: '.date('r'));
         echo $xml;
         exit;
@@ -1068,3 +1061,5 @@ class IXR_ClientMulticall extends IXR_Client
         return parent::query('system.multicall', $this->calls);
     }
 }
+
+?>

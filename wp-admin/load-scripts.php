@@ -21,6 +21,7 @@ function __() {}
  */
 function _x() {}
 
+
 /**
  * @ignore
  */
@@ -50,11 +51,6 @@ function is_lighttpd_before_150() {}
  * @ignore
  */
 function add_action() {}
-
-/**
- * @ignore
- */
-function did_action() {}
 
 /**
  * @ignore
@@ -114,12 +110,8 @@ function get_file($path) {
 	return @file_get_contents($path);
 }
 
-$load = $_GET['load'];
-if ( is_array( $load ) )
-	$load = implode( '', $load );
-
-$load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
-$load = array_unique( explode( ',', $load ) );
+$load = preg_replace( '/[^a-z0-9,_-]+/i', '', $_GET['load'] );
+$load = explode(',', $load);
 
 if ( empty($load) )
 	exit;
@@ -129,7 +121,7 @@ require(ABSPATH . WPINC . '/version.php');
 
 $compress = ( isset($_GET['c']) && $_GET['c'] );
 $force_gzip = ( $compress && 'gzip' == $_GET['c'] );
-$expires_offset = 31536000; // 1 year
+$expires_offset = 31536000;
 $out = '';
 
 $wp_scripts = new WP_Scripts();

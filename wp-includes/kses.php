@@ -10,7 +10,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License along
@@ -34,11 +34,6 @@
 /**
  * You can override this in a plugin.
  *
- * The wp_kses_allowed_html filter is more powerful and supplies context.
- * CUSTOM_TAGS is not recommended and should be considered deprecated.
- *
- * @see wp_kses_allowed_html()
- *
  * @since 1.2.0
  */
 if ( ! defined( 'CUSTOM_TAGS' ) )
@@ -56,317 +51,348 @@ if ( ! CUSTOM_TAGS ) {
 	$allowedposttags = array(
 		'address' => array(),
 		'a' => array(
-			'href' => true,
-			'rel' => true,
-			'rev' => true,
-			'name' => true,
-			'target' => true,
-		),
-		'abbr' => array(),
-		'acronym' => array(),
-		'area' => array(
-			'alt' => true,
-			'coords' => true,
-			'href' => true,
-			'nohref' => true,
-			'shape' => true,
-			'target' => true,
-		),
+			'class' => array (),
+			'href' => array (),
+			'id' => array (),
+			'title' => array (),
+			'rel' => array (),
+			'rev' => array (),
+			'name' => array (),
+			'target' => array()),
+		'abbr' => array(
+			'class' => array (),
+			'title' => array ()),
+		'acronym' => array(
+			'title' => array ()),
 		'article' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'aside' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'b' => array(),
 		'big' => array(),
 		'blockquote' => array(
-			'cite' => true,
-			'lang' => true,
-			'xml:lang' => true,
-		),
-		'br' => array(),
+			'id' => array (),
+			'cite' => array (),
+			'class' => array(),
+			'lang' => array(),
+			'xml:lang' => array()),
+		'br' => array (
+			'class' => array ()),
 		'button' => array(
-			'disabled' => true,
-			'name' => true,
-			'type' => true,
-			'value' => true,
-		),
+			'disabled' => array (),
+			'name' => array (),
+			'type' => array (),
+			'value' => array ()),
 		'caption' => array(
-			'align' => true,
-		),
-		'cite' => array(
-			'dir' => true,
-			'lang' => true,
-		),
-		'code' => array(),
+			'align' => array (),
+			'class' => array ()),
+		'cite' => array (
+			'class' => array(),
+			'dir' => array(),
+			'lang' => array(),
+			'title' => array ()),
+		'code' => array (
+			'style' => array()),
 		'col' => array(
-			'align' => true,
-			'char' => true,
-			'charoff' => true,
-			'span' => true,
-			'dir' => true,
-			'valign' => true,
-			'width' => true,
-		),
+			'align' => array (),
+			'char' => array (),
+			'charoff' => array (),
+			'span' => array (),
+			'dir' => array(),
+			'style' => array (),
+			'valign' => array (),
+			'width' => array ()),
 		'del' => array(
-			'datetime' => true,
-		),
+			'datetime' => array ()),
 		'dd' => array(),
 		'details' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'open' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'open' => array (),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'div' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
-		),
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array()),
 		'dl' => array(),
 		'dt' => array(),
 		'em' => array(),
 		'fieldset' => array(),
 		'figure' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'figcaption' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'font' => array(
-			'color' => true,
-			'face' => true,
-			'size' => true,
-		),
+			'color' => array (),
+			'face' => array (),
+			'size' => array ()),
 		'footer' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'form' => array(
-			'action' => true,
-			'accept' => true,
-			'accept-charset' => true,
-			'enctype' => true,
-			'method' => true,
-			'name' => true,
-			'target' => true,
-		),
+			'action' => array (),
+			'accept' => array (),
+			'accept-charset' => array (),
+			'enctype' => array (),
+			'method' => array (),
+			'name' => array (),
+			'target' => array ()),
 		'h1' => array(
-			'align' => true,
-		),
-		'h2' => array(
-			'align' => true,
-		),
-		'h3' => array(
-			'align' => true,
-		),
-		'h4' => array(
-			'align' => true,
-		),
-		'h5' => array(
-			'align' => true,
-		),
-		'h6' => array(
-			'align' => true,
-		),
+			'align' => array (),
+			'class' => array (),
+			'id'    => array (),
+			'style' => array ()),
+		'h2' => array (
+			'align' => array (),
+			'class' => array (),
+			'id'    => array (),
+			'style' => array ()),
+		'h3' => array (
+			'align' => array (),
+			'class' => array (),
+			'id'    => array (),
+			'style' => array ()),
+		'h4' => array (
+			'align' => array (),
+			'class' => array (),
+			'id'    => array (),
+			'style' => array ()),
+		'h5' => array (
+			'align' => array (),
+			'class' => array (),
+			'id'    => array (),
+			'style' => array ()),
+		'h6' => array (
+			'align' => array (),
+			'class' => array (),
+			'id'    => array (),
+			'style' => array ()),
 		'header' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'hgroup' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
-		'hr' => array(
-			'align' => true,
-			'noshade' => true,
-			'size' => true,
-			'width' => true,
-		),
+		'hr' => array (
+			'align' => array (),
+			'class' => array (),
+			'noshade' => array (),
+			'size' => array (),
+			'width' => array ()),
 		'i' => array(),
 		'img' => array(
-			'alt' => true,
-			'align' => true,
-			'border' => true,
-			'height' => true,
-			'hspace' => true,
-			'longdesc' => true,
-			'vspace' => true,
-			'src' => true,
-			'usemap' => true,
-			'width' => true,
-		),
+			'alt' => array (),
+			'align' => array (),
+			'border' => array (),
+			'class' => array (),
+			'height' => array (),
+			'hspace' => array (),
+			'longdesc' => array (),
+			'vspace' => array (),
+			'src' => array (),
+			'style' => array (),
+			'width' => array ()),
 		'ins' => array(
-			'datetime' => true,
-			'cite' => true,
-		),
+			'datetime' => array (),
+			'cite' => array ()),
 		'kbd' => array(),
 		'label' => array(
-			'for' => true,
-		),
+			'for' => array ()),
 		'legend' => array(
-			'align' => true,
-		),
-		'li' => array(
-			'align' => true,
-		),
-		'map' => array(
-			'name' => true,
-		),
-		'menu' => array(
-			'type' => true,
-		),
+			'align' => array ()),
+		'li' => array (
+			'align' => array (),
+			'class' => array ()),
+		'menu' => array (
+			'class' => array (),
+			'style' => array (),
+			'type' => array ()),
 		'nav' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'p' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
-		),
+			'class' => array (),
+			'align' => array (),
+			'dir' => array(),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array()),
 		'pre' => array(
-			'width' => true,
-		),
+			'style' => array(),
+			'width' => array ()),
 		'q' => array(
-			'cite' => true,
-		),
+			'cite' => array ()),
 		's' => array(),
-		'span' => array(
-			'dir' => true,
-			'align' => true,
-			'lang' => true,
-			'xml:lang' => true,
-		),
+		'span' => array (
+			'class' => array (),
+			'dir' => array (),
+			'align' => array (),
+			'lang' => array (),
+			'style' => array (),
+			'title' => array (),
+			'xml:lang' => array()),
 		'section' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
-		'small' => array(),
 		'strike' => array(),
 		'strong' => array(),
 		'sub' => array(),
 		'summary' => array(
-			'align' => true,
-			'dir' => true,
-			'lang' => true,
-			'xml:lang' => true,
+			'align' => array (),
+			'class' => array (),
+			'dir' => array (),
+			'lang' => array(),
+			'style' => array (),
+			'xml:lang' => array(),
 		),
 		'sup' => array(),
 		'table' => array(
-			'align' => true,
-			'bgcolor' => true,
-			'border' => true,
-			'cellpadding' => true,
-			'cellspacing' => true,
-			'dir' => true,
-			'rules' => true,
-			'summary' => true,
-			'width' => true,
-		),
+			'align' => array (),
+			'bgcolor' => array (),
+			'border' => array (),
+			'cellpadding' => array (),
+			'cellspacing' => array (),
+			'class' => array (),
+			'dir' => array(),
+			'id' => array(),
+			'rules' => array (),
+			'style' => array (),
+			'summary' => array (),
+			'width' => array ()),
 		'tbody' => array(
-			'align' => true,
-			'char' => true,
-			'charoff' => true,
-			'valign' => true,
-		),
+			'align' => array (),
+			'char' => array (),
+			'charoff' => array (),
+			'valign' => array ()),
 		'td' => array(
-			'abbr' => true,
-			'align' => true,
-			'axis' => true,
-			'bgcolor' => true,
-			'char' => true,
-			'charoff' => true,
-			'colspan' => true,
-			'dir' => true,
-			'headers' => true,
-			'height' => true,
-			'nowrap' => true,
-			'rowspan' => true,
-			'scope' => true,
-			'valign' => true,
-			'width' => true,
-		),
+			'abbr' => array (),
+			'align' => array (),
+			'axis' => array (),
+			'bgcolor' => array (),
+			'char' => array (),
+			'charoff' => array (),
+			'class' => array (),
+			'colspan' => array (),
+			'dir' => array(),
+			'headers' => array (),
+			'height' => array (),
+			'nowrap' => array (),
+			'rowspan' => array (),
+			'scope' => array (),
+			'style' => array (),
+			'valign' => array (),
+			'width' => array ()),
 		'textarea' => array(
-			'cols' => true,
-			'rows' => true,
-			'disabled' => true,
-			'name' => true,
-			'readonly' => true,
-		),
+			'cols' => array (),
+			'rows' => array (),
+			'disabled' => array (),
+			'name' => array (),
+			'readonly' => array ()),
 		'tfoot' => array(
-			'align' => true,
-			'char' => true,
-			'charoff' => true,
-			'valign' => true,
-		),
+			'align' => array (),
+			'char' => array (),
+			'class' => array (),
+			'charoff' => array (),
+			'valign' => array ()),
 		'th' => array(
-			'abbr' => true,
-			'align' => true,
-			'axis' => true,
-			'bgcolor' => true,
-			'char' => true,
-			'charoff' => true,
-			'colspan' => true,
-			'headers' => true,
-			'height' => true,
-			'nowrap' => true,
-			'rowspan' => true,
-			'scope' => true,
-			'valign' => true,
-			'width' => true,
-		),
+			'abbr' => array (),
+			'align' => array (),
+			'axis' => array (),
+			'bgcolor' => array (),
+			'char' => array (),
+			'charoff' => array (),
+			'class' => array (),
+			'colspan' => array (),
+			'headers' => array (),
+			'height' => array (),
+			'nowrap' => array (),
+			'rowspan' => array (),
+			'scope' => array (),
+			'valign' => array (),
+			'width' => array ()),
 		'thead' => array(
-			'align' => true,
-			'char' => true,
-			'charoff' => true,
-			'valign' => true,
-		),
+			'align' => array (),
+			'char' => array (),
+			'charoff' => array (),
+			'class' => array (),
+			'valign' => array ()),
 		'title' => array(),
 		'tr' => array(
-			'align' => true,
-			'bgcolor' => true,
-			'char' => true,
-			'charoff' => true,
-			'valign' => true,
-		),
+			'align' => array (),
+			'bgcolor' => array (),
+			'char' => array (),
+			'charoff' => array (),
+			'class' => array (),
+			'style' => array (),
+			'valign' => array ()),
 		'tt' => array(),
 		'u' => array(),
-		'ul' => array(
-			'type' => true,
-		),
-		'ol' => array(
-			'start' => true,
-			'type' => true,
-		),
-		'var' => array(),
-	);
+		'ul' => array (
+			'class' => array (),
+			'style' => array (),
+			'type' => array ()),
+		'ol' => array (
+			'class' => array (),
+			'start' => array (),
+			'style' => array (),
+			'type' => array ()),
+		'var' => array ());
 
 	/**
 	 * Kses allowed HTML elements.
@@ -376,31 +402,36 @@ if ( ! CUSTOM_TAGS ) {
 	 */
 	$allowedtags = array(
 		'a' => array(
-			'href' => true,
-			'title' => true,
-		),
+			'href' => array (),
+			'title' => array ()),
 		'abbr' => array(
-			'title' => true,
-		),
+			'title' => array ()),
 		'acronym' => array(
-			'title' => true,
-		),
+			'title' => array ()),
 		'b' => array(),
 		'blockquote' => array(
-			'cite' => true,
-		),
-		'cite' => array(),
+			'cite' => array ()),
+		//	'br' => array(),
+		'cite' => array (),
 		'code' => array(),
 		'del' => array(
-			'datetime' => true,
-		),
-		'em' => array(),
-		'i' => array(),
+			'datetime' => array ()),
+		//	'dd' => array(),
+		//	'dl' => array(),
+		//	'dt' => array(),
+		'em' => array (), 'i' => array (),
+		//	'ins' => array('datetime' => array(), 'cite' => array()),
+		//	'li' => array(),
+		//	'ol' => array(),
+		//	'p' => array(),
 		'q' => array(
-			'cite' => true,
-		),
+			'cite' => array ()),
 		'strike' => array(),
 		'strong' => array(),
+		//	'sub' => array(),
+		//	'sup' => array(),
+		//	'u' => array(),
+		//	'ul' => array(),
 	);
 
 	$allowedentitynames = array(
@@ -446,11 +477,6 @@ if ( ! CUSTOM_TAGS ) {
 		'sdot',    'lceil',  'rceil',   'lfloor', 'rfloor', 'lang',
 		'rang',    'loz',    'spades',  'clubs',  'hearts', 'diams',
 	);
-
-	$allowedposttags = array_map( '_wp_add_global_attributes', $allowedposttags );
-} else {
-	$allowedtags = wp_kses_array_lc( $allowedtags );
-	$allowedposttags = wp_kses_array_lc( $allowedposttags );
 }
 
 /**
@@ -473,51 +499,15 @@ if ( ! CUSTOM_TAGS ) {
  * @param array $allowed_protocols Optional. Allowed protocol in links.
  * @return string Filtered content with only allowed HTML elements
  */
-function wp_kses( $string, $allowed_html, $allowed_protocols = array() ) {
+function wp_kses($string, $allowed_html, $allowed_protocols = array ()) {
 	if ( empty( $allowed_protocols ) )
 		$allowed_protocols = wp_allowed_protocols();
 	$string = wp_kses_no_null($string);
 	$string = wp_kses_js_entities($string);
 	$string = wp_kses_normalize_entities($string);
-	$string = wp_kses_hook($string, $allowed_html, $allowed_protocols); // WP changed the order of these funcs and added args to wp_kses_hook
-	return wp_kses_split($string, $allowed_html, $allowed_protocols);
-}
-
-/**
- * Return a list of allowed tags and attributes for a given context.
- *
- * @since 3.5.0
- *
- * @param string $context The context for which to retrieve tags. Allowed values are
- *  post | strip | data | entities or the name of a field filter such as pre_user_description.
- * @return array List of allowed tags and their allowed attributes.
- */
-function wp_kses_allowed_html( $context = '' ) {
-	global $allowedposttags, $allowedtags, $allowedentitynames;
-
-	if ( is_array( $context ) )
-		return apply_filters( 'wp_kses_allowed_html', $context, 'explicit' );
-
-	switch ( $context ) {
-		case 'post':
-			return apply_filters( 'wp_kses_allowed_html', $allowedposttags, $context );
-			break;
-		case 'user_description':
-		case 'pre_user_description':
-			$tags = $allowedtags;
-			$tags['a']['rel'] = true;
-			return apply_filters( 'wp_kses_allowed_html', $tags, $context );
-			break;
-		case 'strip':
-			return apply_filters( 'wp_kses_allowed_html', array(), $context );
-			break;
-		case 'entities':
-			return apply_filters( 'wp_kses_allowed_html', $allowedentitynames, $context);
-			break;
-		case 'data':
-		default:
-			return apply_filters( 'wp_kses_allowed_html', $allowedtags, $context );
-	}
+	$allowed_html_fixed = wp_kses_array_lc($allowed_html);
+	$string = wp_kses_hook($string, $allowed_html_fixed, $allowed_protocols); // WP changed the order of these funcs and added args to wp_kses_hook
+	return wp_kses_split($string, $allowed_html_fixed, $allowed_protocols);
 }
 
 /**
@@ -533,7 +523,7 @@ function wp_kses_allowed_html( $context = '' ) {
  * @param array $allowed_protocols Allowed protocol in links
  * @return string Filtered content through 'pre_kses' hook
  */
-function wp_kses_hook( $string, $allowed_html, $allowed_protocols ) {
+function wp_kses_hook($string, $allowed_html, $allowed_protocols) {
 	$string = apply_filters('pre_kses', $string, $allowed_html, $allowed_protocols);
 	return $string;
 }
@@ -561,7 +551,7 @@ function wp_kses_version() {
  * @param array $allowed_protocols Allowed protocols to keep
  * @return string Content with fixed HTML tags
  */
-function wp_kses_split( $string, $allowed_html, $allowed_protocols ) {
+function wp_kses_split($string, $allowed_html, $allowed_protocols) {
 	global $pass_allowed_html, $pass_allowed_protocols;
 	$pass_allowed_html = $allowed_html;
 	$pass_allowed_protocols = $allowed_protocols;
@@ -629,9 +619,6 @@ function wp_kses_split2($string, $allowed_html, $allowed_protocols) {
 	$elem = $matches[2];
 	$attrlist = $matches[3];
 
-	if ( ! is_array( $allowed_html ) )
-		$allowed_html = wp_kses_allowed_html( $allowed_html );
-
 	if ( ! isset($allowed_html[strtolower($elem)]) )
 		return '';
 	# They are using a not allowed HTML element
@@ -663,9 +650,6 @@ function wp_kses_split2($string, $allowed_html, $allowed_protocols) {
 function wp_kses_attr($element, $attr, $allowed_html, $allowed_protocols) {
 	# Is there a closing XHTML slash at the end of the attributes?
 
-	if ( ! is_array( $allowed_html ) )
-		$allowed_html = wp_kses_allowed_html( $allowed_html );
-
 	$xhtml_slash = '';
 	if (preg_match('%\s*/\s*$%', $attr))
 		$xhtml_slash = ' /';
@@ -690,17 +674,6 @@ function wp_kses_attr($element, $attr, $allowed_html, $allowed_protocols) {
 		if ( $current == '' )
 			continue; # the attribute is not allowed
 
-		if ( strtolower( $arreach['name'] ) == 'style' ) {
-			$orig_value = $arreach['value'];
-			$value = safecss_filter_attr( $orig_value );
-
-			if ( empty( $value ) )
-				continue;
-
-			$arreach['value'] = $value;
-			$arreach['whole'] = str_replace( $orig_value, $value, $arreach['whole'] );
-		}
-
 		if ( ! is_array($current) ) {
 			$attr2 .= ' '.$arreach['whole'];
 		# there are no checks
@@ -715,7 +688,18 @@ function wp_kses_attr($element, $attr, $allowed_html, $allowed_protocols) {
 				}
 			}
 
-			if ( $ok )
+			if ( strtolower($arreach['name']) == 'style' ) {
+				$orig_value = $arreach['value'];
+				$value = safecss_filter_attr($orig_value);
+
+				if ( empty($value) )
+					continue;
+
+				$arreach['value'] = $value;
+				$arreach['whole'] = str_replace($orig_value, $value, $arreach['whole']);
+			}
+
+			if ($ok)
 				$attr2 .= ' '.$arreach['whole']; # it passed them
 		} # if !is_array($current)
 	} # foreach
@@ -734,7 +718,7 @@ function wp_kses_attr($element, $attr, $allowed_html, $allowed_protocols) {
  * input. It will add quotes around attribute values that don't have any quotes
  * or apostrophes around them, to make it easier to produce HTML code that will
  * conform to W3C's HTML specification. It will also remove bad URL protocols
- * from attribute values. It also reduces duplicate attributes by using the
+ * from attribute values.  It also reduces duplicate attributes by using the
  * attribute defined first (foo='bar' foo='baz' will result in foo='bar').
  *
  * @since 1.0.0
@@ -744,7 +728,7 @@ function wp_kses_attr($element, $attr, $allowed_html, $allowed_protocols) {
  * @return array List of attributes after parsing
  */
 function wp_kses_hair($attr, $allowed_protocols) {
-	$attrarr = array();
+	$attrarr = array ();
 	$mode = 0;
 	$attrname = '';
 	$uris = array('xmlns', 'profile', 'href', 'src', 'cite', 'classid', 'codebase', 'data', 'usemap', 'longdesc', 'action');
@@ -779,7 +763,7 @@ function wp_kses_hair($attr, $allowed_protocols) {
 					{
 					$working = 1;
 					$mode = 0;
-					if(false === array_key_exists($attrname, $attrarr)) {
+					if(FALSE === array_key_exists($attrname, $attrarr)) {
 						$attrarr[$attrname] = array ('name' => $attrname, 'value' => '', 'whole' => $attrname, 'vless' => 'y');
 					}
 					$attr = preg_replace('/^\s+/', '', $attr);
@@ -796,7 +780,7 @@ function wp_kses_hair($attr, $allowed_protocols) {
 					if ( in_array(strtolower($attrname), $uris) )
 						$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
 
-					if(false === array_key_exists($attrname, $attrarr)) {
+					if(FALSE === array_key_exists($attrname, $attrarr)) {
 						$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname=\"$thisval\"", 'vless' => 'n');
 					}
 					$working = 1;
@@ -812,7 +796,7 @@ function wp_kses_hair($attr, $allowed_protocols) {
 					if ( in_array(strtolower($attrname), $uris) )
 						$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
 
-					if(false === array_key_exists($attrname, $attrarr)) {
+					if(FALSE === array_key_exists($attrname, $attrarr)) {
 						$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname='$thisval'", 'vless' => 'n');
 					}
 					$working = 1;
@@ -828,7 +812,7 @@ function wp_kses_hair($attr, $allowed_protocols) {
 					if ( in_array(strtolower($attrname), $uris) )
 						$thisval = wp_kses_bad_protocol($thisval, $allowed_protocols);
 
-					if(false === array_key_exists($attrname, $attrarr)) {
+					if(FALSE === array_key_exists($attrname, $attrarr)) {
 						$attrarr[$attrname] = array ('name' => $attrname, 'value' => $thisval, 'whole' => "$attrname=\"$thisval\"", 'vless' => 'n');
 					}
 					# We add quotes to conform to W3C's HTML spec.
@@ -847,7 +831,7 @@ function wp_kses_hair($attr, $allowed_protocols) {
 		}
 	} # while
 
-	if ($mode == 1 && false === array_key_exists($attrname, $attrarr))
+	if ($mode == 1 && FALSE === array_key_exists($attrname, $attrarr))
 		# special case, for when the attribute list ends with a valueless
 		# attribute like "selected"
 		$attrarr[$attrname] = array ('name' => $attrname, 'value' => '', 'whole' => $attrname, 'vless' => 'y');
@@ -957,7 +941,7 @@ function wp_kses_bad_protocol($string, $allowed_protocols) {
 }
 
 /**
- * Removes any null characters in $string.
+ * Removes any NULL characters in $string.
  *
  * @since 1.0.0
  *
@@ -1253,8 +1237,9 @@ function _wp_kses_decode_entities_chr_hexdec( $match ) {
  * @param string $data Content to filter, expected to be escaped with slashes
  * @return string Filtered content
  */
-function wp_filter_kses( $data ) {
-	return addslashes( wp_kses( stripslashes( $data ), current_filter() ) );
+function wp_filter_kses($data) {
+	global $allowedtags;
+	return addslashes( wp_kses(stripslashes( $data ), $allowedtags) );
 }
 
 /**
@@ -1266,8 +1251,9 @@ function wp_filter_kses( $data ) {
  * @param string $data Content to filter, expected to not be escaped
  * @return string Filtered content
  */
-function wp_kses_data( $data ) {
-	return wp_kses( $data , current_filter() );
+function wp_kses_data($data) {
+	global $allowedtags;
+	return wp_kses( $data , $allowedtags );
 }
 
 /**
@@ -1277,12 +1263,14 @@ function wp_kses_data( $data ) {
  * data from forms.
  *
  * @since 2.0.0
+ * @uses $allowedposttags
  *
  * @param string $data Post content to filter, expected to be escaped with slashes
  * @return string Filtered post content with allowed HTML tags and attributes intact.
  */
 function wp_filter_post_kses($data) {
-	return addslashes ( wp_kses( stripslashes( $data ), 'post' ) );
+	global $allowedposttags;
+	return addslashes ( wp_kses(stripslashes( $data ), $allowedposttags) );
 }
 
 /**
@@ -1292,12 +1280,14 @@ function wp_filter_post_kses($data) {
  * data from forms.
  *
  * @since 2.9.0
+ * @uses $allowedposttags
  *
  * @param string $data Post content to filter
  * @return string Filtered post content with allowed HTML tags and attributes intact.
  */
 function wp_kses_post($data) {
-	return wp_kses( $data , 'post' );
+	global $allowedposttags;
+	return wp_kses( $data , $allowedposttags );
 }
 
 /**
@@ -1308,8 +1298,8 @@ function wp_kses_post($data) {
  * @param string $data Content to strip all HTML from
  * @return string Filtered content without any HTML
  */
-function wp_filter_nohtml_kses( $data ) {
-	return addslashes ( wp_kses( stripslashes( $data ), 'strip' ) );
+function wp_filter_nohtml_kses($data) {
+	return addslashes ( wp_kses(stripslashes( $data ), array()) );
 }
 
 /**
@@ -1325,14 +1315,9 @@ function wp_filter_nohtml_kses( $data ) {
  * @uses add_filter() See description for what functions are added to what hooks.
  */
 function kses_init_filters() {
-	// Normal filtering
+	// Normal filtering.
+	add_filter('pre_comment_content', 'wp_filter_kses');
 	add_filter('title_save_pre', 'wp_filter_kses');
-
-	// Comment filtering
-	if ( current_user_can( 'unfiltered_html' ) )
-		add_filter( 'pre_comment_content', 'wp_filter_post_kses' );
-	else
-		add_filter( 'pre_comment_content', 'wp_filter_kses' );
 
 	// Post filtering
 	add_filter('content_save_pre', 'wp_filter_post_kses');
@@ -1353,12 +1338,9 @@ function kses_init_filters() {
  * @since 2.0.6
  */
 function kses_remove_filters() {
-	// Normal filtering
+	// Normal filtering.
+	remove_filter('pre_comment_content', 'wp_filter_kses');
 	remove_filter('title_save_pre', 'wp_filter_kses');
-
-	// Comment filtering
-	remove_filter( 'pre_comment_content', 'wp_filter_post_kses' );
-	remove_filter( 'pre_comment_content', 'wp_filter_kses' );
 
 	// Post filtering
 	remove_filter('content_save_pre', 'wp_filter_post_kses');
@@ -1432,7 +1414,7 @@ function safecss_filter_attr( $css, $deprecated = '' ) {
 		if ( strpos( $css_item, ':' ) === false ) {
 			$found = true;
 		} else {
-			$parts = explode( ':', $css_item );
+			$parts = split( ':', $css_item );
 			if ( in_array( trim( $parts[0] ), $allowed_attr ) )
 				$found = true;
 		}
@@ -1444,30 +1426,4 @@ function safecss_filter_attr( $css, $deprecated = '' ) {
 	}
 
 	return $css;
-}
-
-/**
- * Helper function to add global attributes to a tag in the allowed html list.
- *
- * @since 3.5.0
- * @access private
- *
- * @param array $value An array of attributes.
- * @return array The array of attributes with global attributes added.
- */
-function _wp_add_global_attributes( $value ) {
-	$global_attributes = array(
-		'class' => true,
-		'id' => true,
-		'style' => true,
-		'title' => true,
-	);
-
-	if ( true === $value )
-		$value = array();
-
-	if ( is_array( $value ) )
-		return array_merge( $value, $global_attributes );
-
-	return $value;
 }

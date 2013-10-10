@@ -12,16 +12,16 @@
  * @since 2.3.2
  */
 if ( ! defined('WP_ADMIN') )
-	define('WP_ADMIN', true);
+	define('WP_ADMIN', TRUE);
 
 if ( ! defined('WP_NETWORK_ADMIN') )
-	define('WP_NETWORK_ADMIN', false);
+	define('WP_NETWORK_ADMIN', FALSE);
 
 if ( ! defined('WP_USER_ADMIN') )
-	define('WP_USER_ADMIN', false);
+	define('WP_USER_ADMIN', FALSE);
 
 if ( ! WP_NETWORK_ADMIN && ! WP_USER_ADMIN ) {
-	define('WP_BLOG_ADMIN', true);
+	define('WP_BLOG_ADMIN', TRUE);
 }
 
 if ( isset($_GET['import']) && !defined('WP_LOAD_IMPORTERS') )
@@ -29,10 +29,8 @@ if ( isset($_GET['import']) && !defined('WP_LOAD_IMPORTERS') )
 
 require_once(dirname(dirname(__FILE__)) . '/wp-load.php');
 
-nocache_headers();
-
 if ( get_option('db_upgraded') ) {
-	flush_rewrite_rules();
+	$wp_rewrite->flush_rules();
 	update_option( 'db_upgraded',  false );
 
 	/**
@@ -43,7 +41,7 @@ if ( get_option('db_upgraded') ) {
 	do_action('after_db_upgrade');
 } elseif ( get_option('db_version') != $wp_db_version && empty($_POST) ) {
 	if ( !is_multisite() ) {
-		wp_redirect( admin_url( 'upgrade.php?_wp_http_referer=' . urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) );
+		wp_redirect(admin_url('upgrade.php?_wp_http_referer=' . urlencode(stripslashes($_SERVER['REQUEST_URI']))));
 		exit;
 	} elseif ( apply_filters( 'do_mu_upgrade', true ) ) {
 		/**
@@ -53,7 +51,6 @@ if ( get_option('db_upgraded') ) {
 		 * @since 2.8.4b
 		 */
 		$c = get_blog_count();
-		// If 50 or fewer sites, run every time. Else, run "about ten percent" of the time. Shh, don't check that math.
 		if ( $c <= 50 || ( $c > 50 && mt_rand( 0, (int)( $c / 50 ) ) == 1 ) ) {
 			require_once( ABSPATH . WPINC . '/http.php' );
 			$response = wp_remote_get( admin_url( 'upgrade.php?step=1' ), array( 'timeout' => 120, 'httpversion' => '1.1' ) );
@@ -68,6 +65,8 @@ require_once(ABSPATH . 'wp-admin/includes/admin.php');
 
 auth_redirect();
 
+nocache_headers();
+
 // Schedule trash collection
 if ( !wp_next_scheduled('wp_scheduled_delete') && !defined('WP_INSTALLING') )
 	wp_schedule_event(time(), 'daily', 'wp_scheduled_delete');
@@ -77,12 +76,15 @@ set_screen_options();
 $date_format = get_option('date_format');
 $time_format = get_option('time_format');
 
+wp_reset_vars(array('profile', 'redirect', 'redirect_url', 'a', 'text', 'trackback', 'pingback'));
+
 wp_enqueue_script( 'common' );
+wp_enqueue_script( 'jquery-color' );
 
 $editing = false;
 
 if ( isset($_GET['page']) ) {
-	$plugin_page = wp_unslash( $_GET['page'] );
+	$plugin_page = stripslashes($_GET['page']);
 	$plugin_page = plugin_basename($plugin_page);
 }
 
@@ -151,6 +153,7 @@ if ( isset($plugin_page) ) {
 		if ( validate_file($plugin_page) )
 			wp_die(__('Invalid plugin page'));
 
+
 		if ( !( file_exists(WP_PLUGIN_DIR . "/$plugin_page") && is_file(WP_PLUGIN_DIR . "/$plugin_page") ) && !( file_exists(WPMU_PLUGIN_DIR . "/$plugin_page") && is_file(WPMU_PLUGIN_DIR . "/$plugin_page") ) )
 			wp_die(sprintf(__('Cannot load %s.'), htmlentities($plugin_page)));
 
@@ -184,8 +187,6 @@ if ( isset($plugin_page) ) {
 		wp_redirect( admin_url( 'import.php?invalid=' . $importer ) );
 		exit;
 	}
-
-	do_action( 'load-importer-' . $importer );
 
 	$parent_file = 'tools.php';
 	$submenu_file = 'import.php';
@@ -228,3 +229,5 @@ if ( isset($plugin_page) ) {
 
 if ( !empty($_REQUEST['action']) )
 	do_action('admin_action_' . $_REQUEST['action']);
+
+?>

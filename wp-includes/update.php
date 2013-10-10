@@ -34,12 +34,6 @@ function wp_version_check() {
 		$current->version_checked = $wp_version;
 	}
 
-	// Wait 60 seconds between multiple version check requests
-	$timeout = 60;
-	$time_not_changed = isset( $current->last_checked ) && $timeout > ( time() - $current->last_checked );
-	if ( $time_not_changed )
-		return false;
-
 	$locale = apply_filters( 'core_version_check_locale', get_locale() );
 
 	// Update last_checked for current to prevent multiple blocking requests if request hangs
@@ -51,14 +45,13 @@ function wp_version_check() {
 	else
 		$mysql_version = 'N/A';
 
-	if ( is_multisite() ) {
-		$user_count = get_user_count();
-		$num_blogs = get_blog_count();
-		$wp_install = network_site_url();
+	if ( is_multisite( ) ) {
+		$user_count = get_user_count( );
+		$num_blogs = get_blog_count( );
+		$wp_install = network_site_url( );
 		$multisite_enabled = 1;
 	} else {
-		$user_count = count_users();
-		$user_count = $user_count['total_users'];
+		$user_count = count_users( );
 		$multisite_enabled = 0;
 		$num_blogs = 1;
 		$wp_install = home_url( '/' );
@@ -71,7 +64,7 @@ function wp_version_check() {
 		'mysql'             => $mysql_version,
 		'local_package'     => isset( $wp_local_package ) ? $wp_local_package : '',
 		'blogs'             => $num_blogs,
-		'users'             => $user_count,
+		'users'             => $user_count['total_users'],
 		'multisite_enabled' => $multisite_enabled
 	);
 
@@ -92,11 +85,10 @@ function wp_version_check() {
 		return false;
 
 	$body = trim( wp_remote_retrieve_body( $response ) );
-	$body = maybe_unserialize( $body );
-
-	if ( ! is_array( $body ) || ! isset( $body['offers'] ) )
+	if ( ! $body = maybe_unserialize( $body ) )
 		return false;
-
+	if ( ! isset( $body['offers'] ) )
+		return false;
 	$offers = $body['offers'];
 
 	foreach ( $offers as &$offer ) {
@@ -151,44 +143,30 @@ function wp_update_plugins() {
 
 	$new_option = new stdClass;
 	$new_option->last_checked = time();
-
-	// Check for update on a different schedule, depending on the page.
-	switch ( current_filter() ) {
-		case 'load-update-core.php' :
-			$timeout = MINUTE_IN_SECONDS;
-			break;
-		case 'load-plugins.php' :
-		case 'load-update.php' :
-			$timeout = HOUR_IN_SECONDS;
-			break;
-		default :
-			$timeout = 12 * HOUR_IN_SECONDS;
-	}
-
+	// Check for updated every 60 minutes if hitting update pages; else, check every 12 hours.
+	$timeout = in_array( current_filter(), array( 'load-plugins.php', 'load-update.php', 'load-update-core.php' ) ) ? 3600 : 43200;
 	$time_not_changed = isset( $current->last_checked ) && $timeout > ( time() - $current->last_checked );
 
-	if ( $time_not_changed ) {
-		$plugin_changed = false;
-		foreach ( $plugins as $file => $p ) {
-			$new_option->checked[ $file ] = $p['Version'];
+	$plugin_changed = false;
+	foreach ( $plugins as $file => $p ) {
+		$new_option->checked[ $file ] = $p['Version'];
 
-			if ( !isset( $current->checked[ $file ] ) || strval($current->checked[ $file ]) !== strval($p['Version']) )
+		if ( !isset( $current->checked[ $file ] ) || strval($current->checked[ $file ]) !== strval($p['Version']) )
+			$plugin_changed = true;
+	}
+
+	if ( isset ( $current->response ) && is_array( $current->response ) ) {
+		foreach ( $current->response as $plugin_file => $update_details ) {
+			if ( ! isset($plugins[ $plugin_file ]) ) {
 				$plugin_changed = true;
-		}
-
-		if ( isset ( $current->response ) && is_array( $current->response ) ) {
-			foreach ( $current->response as $plugin_file => $update_details ) {
-				if ( ! isset($plugins[ $plugin_file ]) ) {
-					$plugin_changed = true;
-					break;
-				}
+				break;
 			}
 		}
-
-		// Bail if we've checked recently and if nothing has changed
-		if ( ! $plugin_changed )
-			return false;
 	}
+
+	// Bail if we've checked in the last 12 hours and if nothing has changed
+	if ( $time_not_changed && !$plugin_changed )
+		return false;
 
 	// Update last_checked for current to prevent multiple blocking requests if request hangs
 	$current->last_checked = time();
@@ -207,9 +185,9 @@ function wp_update_plugins() {
 	if ( is_wp_error( $raw_response ) || 200 != wp_remote_retrieve_response_code( $raw_response ) )
 		return false;
 
-	$response = maybe_unserialize( wp_remote_retrieve_body( $raw_response ) );
+	$response = unserialize( wp_remote_retrieve_body( $raw_response ) );
 
-	if ( is_array( $response ) )
+	if ( false !== $response )
 		$new_option->response = $response;
 	else
 		$new_option->response = array();
@@ -236,66 +214,57 @@ function wp_update_themes() {
 	if ( defined( 'WP_INSTALLING' ) )
 		return false;
 
-	$installed_themes = wp_get_themes();
+	if ( !function_exists( 'get_themes' ) )
+		require_once( ABSPATH . 'wp-includes/theme.php' );
+
+	$installed_themes = get_themes( );
 	$last_update = get_site_transient( 'update_themes' );
 	if ( ! is_object($last_update) )
 		$last_update = new stdClass;
 
+	// Check for updated every 60 minutes if hitting update pages; else, check every 12 hours.
+	$timeout = in_array( current_filter(), array( 'load-themes.php', 'load-update.php', 'load-update-core.php' ) ) ? 3600 : 43200;
+	$time_not_changed = isset( $last_update->last_checked ) && $timeout > ( time( ) - $last_update->last_checked );
+
 	$themes = array();
 	$checked = array();
+	$exclude_fields = array('Template Files', 'Stylesheet Files', 'Status', 'Theme Root', 'Theme Root URI', 'Template Dir', 'Stylesheet Dir', 'Description', 'Tags', 'Screenshot');
 
 	// Put slug of current theme into request.
 	$themes['current_theme'] = get_option( 'stylesheet' );
 
-	foreach ( $installed_themes as $theme ) {
-		$checked[ $theme->get_stylesheet() ] = $theme->get('Version');
+	foreach ( (array) $installed_themes as $theme_title => $theme ) {
+		$themes[$theme['Stylesheet']] = array();
+		$checked[$theme['Stylesheet']] = $theme['Version'];
 
-		$themes[ $theme->get_stylesheet() ] = array(
-			'Name'       => $theme->get('Name'),
-			'Title'      => $theme->get('Name'),
-			'Version'    => $theme->get('Version'),
-			'Author'     => $theme->get('Author'),
-			'Author URI' => $theme->get('AuthorURI'),
-			'Template'   => $theme->get_template(),
-			'Stylesheet' => $theme->get_stylesheet(),
-		);
-	}
+		$themes[$theme['Stylesheet']]['Name'] = $theme['Name'];
+		$themes[$theme['Stylesheet']]['Version'] = $theme['Version'];
 
-	// Check for update on a different schedule, depending on the page.
-	switch ( current_filter() ) {
-		case 'load-update-core.php' :
-			$timeout = MINUTE_IN_SECONDS;
-			break;
-		case 'load-themes.php' :
-		case 'load-update.php' :
-			$timeout = HOUR_IN_SECONDS;
-			break;
-		default :
-			$timeout = 12 * HOUR_IN_SECONDS;
-	}
-
-	$time_not_changed = isset( $last_update->last_checked ) && $timeout > ( time() - $last_update->last_checked );
-
-	if ( $time_not_changed ) {
-		$theme_changed = false;
-		foreach ( $checked as $slug => $v ) {
-			if ( !isset( $last_update->checked[ $slug ] ) || strval($last_update->checked[ $slug ]) !== strval($v) )
-				$theme_changed = true;
+		foreach ( (array) $theme as $key => $value ) {
+			if ( !in_array($key, $exclude_fields) )
+				$themes[$theme['Stylesheet']][$key] = $value;
 		}
+	}
 
-		if ( isset ( $last_update->response ) && is_array( $last_update->response ) ) {
-			foreach ( $last_update->response as $slug => $update_details ) {
-				if ( ! isset($checked[ $slug ]) ) {
-					$theme_changed = true;
-					break;
-				}
+	$theme_changed = false;
+	foreach ( $checked as $slug => $v ) {
+		$update_request->checked[ $slug ] = $v;
+
+		if ( !isset( $last_update->checked[ $slug ] ) || strval($last_update->checked[ $slug ]) !== strval($v) )
+			$theme_changed = true;
+	}
+
+	if ( isset ( $last_update->response ) && is_array( $last_update->response ) ) {
+		foreach ( $last_update->response as $slug => $update_details ) {
+			if ( ! isset($checked[ $slug ]) ) {
+				$theme_changed = true;
+				break;
 			}
 		}
-
-		// Bail if we've checked recently and if nothing has changed
-		if ( ! $theme_changed )
-			return false;
 	}
+
+	if ( $time_not_changed && !$theme_changed )
+		return false;
 
 	// Update last_checked for current to prevent multiple blocking requests if request hangs
 	$last_update->last_checked = time();
@@ -313,11 +282,11 @@ function wp_update_themes() {
 		return false;
 
 	$new_update = new stdClass;
-	$new_update->last_checked = time();
+	$new_update->last_checked = time( );
 	$new_update->checked = $checked;
 
-	$response = maybe_unserialize( wp_remote_retrieve_body( $raw_response ) );
-	if ( is_array( $response ) )
+	$response = unserialize( wp_remote_retrieve_body( $raw_response ) );
+	if ( false !== $response )
 		$new_update->response = $response;
 
 	set_site_transient( 'update_themes', $new_update );
@@ -352,17 +321,17 @@ function wp_get_update_data() {
 	}
 
 	$counts['total'] = $counts['plugins'] + $counts['themes'] + $counts['wordpress'];
-	$titles = array();
+	$update_title = array();
 	if ( $counts['wordpress'] )
-		$titles['wordpress'] = sprintf( __( '%d WordPress Update'), $counts['wordpress'] );
+		$update_title[] = sprintf(__('%d WordPress Update'), $counts['wordpress']);
 	if ( $counts['plugins'] )
-		$titles['plugins'] = sprintf( _n( '%d Plugin Update', '%d Plugin Updates', $counts['plugins'] ), $counts['plugins'] );
+		$update_title[] = sprintf(_n('%d Plugin Update', '%d Plugin Updates', $counts['plugins']), $counts['plugins']);
 	if ( $counts['themes'] )
-		$titles['themes'] = sprintf( _n( '%d Theme Update', '%d Theme Updates', $counts['themes'] ), $counts['themes'] );
+		$update_title[] = sprintf(_n('%d Theme Update', '%d Theme Updates', $counts['themes']), $counts['themes']);
 
-	$update_title = $titles ? esc_attr( implode( ', ', $titles ) ) : '';
+	$update_title = ! empty( $update_title ) ? esc_attr( implode( ', ', $update_title ) ) : '';
 
-	return apply_filters( 'wp_get_update_data', array( 'counts' => $counts, 'title' => $update_title ), $titles );
+	return array( 'counts' => $counts, 'title' => $update_title );
 }
 
 function _maybe_update_core() {
@@ -371,7 +340,7 @@ function _maybe_update_core() {
 	$current = get_site_transient( 'update_core' );
 
 	if ( isset( $current->last_checked ) &&
-		12 * HOUR_IN_SECONDS > ( time() - $current->last_checked ) &&
+		43200 > ( time() - $current->last_checked ) &&
 		isset( $current->version_checked ) &&
 		$current->version_checked == $wp_version )
 		return;
@@ -390,7 +359,7 @@ function _maybe_update_core() {
  */
 function _maybe_update_plugins() {
 	$current = get_site_transient( 'update_plugins' );
-	if ( isset( $current->last_checked ) && 12 * HOUR_IN_SECONDS > ( time() - $current->last_checked ) )
+	if ( isset( $current->last_checked ) && 43200 > ( time() - $current->last_checked ) )
 		return;
 	wp_update_plugins();
 }
@@ -404,9 +373,9 @@ function _maybe_update_plugins() {
  * @since 2.7.0
  * @access private
  */
-function _maybe_update_themes() {
+function _maybe_update_themes( ) {
 	$current = get_site_transient( 'update_themes' );
-	if ( isset( $current->last_checked ) && 12 * HOUR_IN_SECONDS > ( time() - $current->last_checked ) )
+	if ( isset( $current->last_checked ) && 43200 > ( time( ) - $current->last_checked ) )
 		return;
 
 	wp_update_themes();
@@ -428,7 +397,7 @@ function wp_schedule_update_checks() {
 		wp_schedule_event(time(), 'twicedaily', 'wp_update_themes');
 }
 
-if ( ( ! is_main_site() && ! is_network_admin() ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) )
+if ( ! is_main_site() && ! is_network_admin() )
 	return;
 
 add_action( 'admin_init', '_maybe_update_core' );
@@ -447,3 +416,5 @@ add_action( 'admin_init', '_maybe_update_themes' );
 add_action( 'wp_update_themes', 'wp_update_themes' );
 
 add_action('init', 'wp_schedule_update_checks');
+
+?>

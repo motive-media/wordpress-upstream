@@ -33,15 +33,10 @@ function get_bookmark($bookmark, $output = OBJECT, $filter = 'raw') {
 			$_bookmark = & $GLOBALS['link'];
 		} elseif ( ! $_bookmark = wp_cache_get($bookmark, 'bookmark') ) {
 			$_bookmark = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->links WHERE link_id = %d LIMIT 1", $bookmark));
-			if ( $_bookmark ) {
-				$_bookmark->link_category = array_unique( wp_get_object_terms( $_bookmark->link_id, 'link_category', array( 'fields' => 'ids' ) ) );
-				wp_cache_add( $_bookmark->link_id, $_bookmark, 'bookmark' );
-			}
+			$_bookmark->link_category = array_unique( wp_get_object_terms($_bookmark->link_id, 'link_category', array('fields' => 'ids')) );
+			wp_cache_add($_bookmark->link_id, $_bookmark, 'bookmark');
 		}
 	}
-
-	if ( ! $_bookmark )
-		return $_bookmark;
 
 	$_bookmark = sanitize_bookmark($_bookmark, $filter);
 
@@ -106,9 +101,9 @@ function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
  *		links marked as 'invisible'.
  * 'show_updated' - Default is 0 (integer). Will show the time of when the
  *		bookmark was last updated.
- * 'include' - Default is empty string (string). Include bookmark ID(s)
+ * 'include' - Default is empty string (string). Include other categories
  *		separated by commas.
- * 'exclude' - Default is empty string (string). Exclude bookmark ID(s)
+ * 'exclude' - Default is empty string (string). Exclude other categories
  *		separated by commas.
  *
  * @since 2.1.0
@@ -186,7 +181,7 @@ function get_bookmarks($args = '') {
 	}
 
 	if ( ! empty($search) ) {
-		$search = esc_sql( like_escape( $search ) );
+		$search = like_escape($search);
 		$search = " AND ( (link_url LIKE '%$search%') OR (link_name LIKE '%$search%') OR (link_description LIKE '%$search%') ) ";
 	}
 
@@ -380,8 +375,9 @@ function sanitize_bookmark_field($field, $value, $bookmark_id, $context) {
  * @since 2.7.0
  * @uses wp_cache_delete() Deletes the contents of 'get_bookmarks'
  */
-function clean_bookmark_cache( $bookmark_id ) {
+function clean_bookmark_cache($bookmark_id) {
 	wp_cache_delete( $bookmark_id, 'bookmark' );
 	wp_cache_delete( 'get_bookmarks', 'bookmark' );
-	clean_object_term_cache( $bookmark_id, 'link');
 }
+
+?>

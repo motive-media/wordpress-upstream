@@ -45,7 +45,7 @@
  *
  * <strong>Note:</strong> the function will return true no matter if the
  * function was hooked fails or not. There are no checks for whether the
- * function exists beforehand and no checks to whether the <tt>$function_to_add</tt>
+ * function exists beforehand and no checks to whether the <tt>$function_to_add
  * is even a string. It is up to you to take care and this is done for
  * optimization purposes, so everything is as quick as possible.
  *
@@ -80,11 +80,8 @@ function add_filter($tag, $function_to_add, $priority = 10, $accepted_args = 1) 
  * @global array $wp_filter Stores all of the filters
  *
  * @param string $tag The name of the filter hook.
- * @param callback $function_to_check optional.
- * @return mixed If $function_to_check is omitted, returns boolean for whether the hook has anything registered.
- * 	When checking a specific function, the priority of that hook is returned, or false if the function is not attached.
- * 	When using the $function_to_check argument, this function may return a non-boolean value that evaluates to false
- * 	(e.g.) 0, so use the === operator for testing the return value.
+ * @param callback $function_to_check optional.  If specified, return the priority of that function on this hook or false if not attached.
+ * @return int|boolean Optionally returns the priority on that hook for the specified function.
  */
 function has_filter($tag, $function_to_check = false) {
 	global $wp_filter;
@@ -257,7 +254,7 @@ function apply_filters_ref_array($tag, $args) {
  * @param int $accepted_args optional. The number of arguments the function accepts (default: 1).
  * @return boolean Whether the function existed before it was removed.
  */
-function remove_filter( $tag, $function_to_remove, $priority = 10 ) {
+function remove_filter($tag, $function_to_remove, $priority = 10, $accepted_args = 1) {
 	$function_to_remove = _wp_filter_build_unique_id($tag, $function_to_remove, $priority);
 
 	$r = isset($GLOBALS['wp_filter'][$tag][$priority][$function_to_remove]);
@@ -311,6 +308,7 @@ function current_filter() {
 	return end( $wp_current_filter );
 }
 
+
 /**
  * Hooks a function on to a specific action.
  *
@@ -333,6 +331,7 @@ function current_filter() {
 function add_action($tag, $function_to_add, $priority = 10, $accepted_args = 1) {
 	return add_filter($tag, $function_to_add, $priority, $accepted_args);
 }
+
 
 /**
  * Execute functions hooked on a specific action hook.
@@ -500,11 +499,8 @@ function do_action_ref_array($tag, $args) {
  * @see has_filter() has_action() is an alias of has_filter().
  *
  * @param string $tag The name of the action hook.
- * @param callback $function_to_check optional.
- * @return mixed If $function_to_check is omitted, returns boolean for whether the hook has anything registered.
- * 	When checking a specific function, the priority of that hook is returned, or false if the function is not attached.
- * 	When using the $function_to_check argument, this function may return a non-boolean value that evaluates to false
- * 	(e.g.) 0, so use the === operator for testing the return value.
+ * @param callback $function_to_check optional.  If specified, return the priority of that function on this hook or false if not attached.
+ * @return int|boolean Optionally returns the priority on that hook for the specified function.
  */
 function has_action($tag, $function_to_check = false) {
 	return has_filter($tag, $function_to_check);
@@ -524,10 +520,11 @@ function has_action($tag, $function_to_check = false) {
  * @param string $tag The action hook to which the function to be removed is hooked.
  * @param callback $function_to_remove The name of the function which should be removed.
  * @param int $priority optional The priority of the function (default: 10).
+ * @param int $accepted_args optional. The number of arguments the function accepts (default: 1).
  * @return boolean Whether the function is removed.
  */
-function remove_action( $tag, $function_to_remove, $priority = 10 ) {
-	return remove_filter( $tag, $function_to_remove, $priority );
+function remove_action($tag, $function_to_remove, $priority = 10, $accepted_args = 1) {
+	return remove_filter($tag, $function_to_remove, $priority, $accepted_args);
 }
 
 /**
@@ -604,13 +601,12 @@ function plugin_dir_url( $file ) {
  * Set the activation hook for a plugin.
  *
  * When a plugin is activated, the action 'activate_PLUGINNAME' hook is
- * called. In the name of this hook, PLUGINNAME is replaced with the name
- * of the plugin, including the optional subdirectory. For example, when the
- * plugin is located in wp-content/plugins/sampleplugin/sample.php, then
- * the name of this hook will become 'activate_sampleplugin/sample.php'.
- *
- * When the plugin consists of only one file and is (as by default) located at
- * wp-content/plugins/sample.php the name of this hook will be
+ * activated. In the name of this hook, PLUGINNAME is replaced with the name of
+ * the plugin, including the optional subdirectory. For example, when the plugin
+ * is located in wp-content/plugin/sampleplugin/sample.php, then the name of
+ * this hook will become 'activate_sampleplugin/sample.php'. When the plugin
+ * consists of only one file and is (as by default) located at
+ * wp-content/plugin/sample.php the name of this hook will be
  * 'activate_sample.php'.
  *
  * @package WordPress
@@ -629,21 +625,21 @@ function register_activation_hook($file, $function) {
  * Set the deactivation hook for a plugin.
  *
  * When a plugin is deactivated, the action 'deactivate_PLUGINNAME' hook is
- * called. In the name of this hook, PLUGINNAME is replaced with the name
+ * deactivated. In the name of this hook, PLUGINNAME is replaced with the name
  * of the plugin, including the optional subdirectory. For example, when the
- * plugin is located in wp-content/plugins/sampleplugin/sample.php, then
- * the name of this hook will become 'deactivate_sampleplugin/sample.php'.
+ * plugin is located in wp-content/plugin/sampleplugin/sample.php, then
+ * the name of this hook will become 'activate_sampleplugin/sample.php'.
  *
  * When the plugin consists of only one file and is (as by default) located at
- * wp-content/plugins/sample.php the name of this hook will be
- * 'deactivate_sample.php'.
+ * wp-content/plugin/sample.php the name of this hook will be
+ * 'activate_sample.php'.
  *
  * @package WordPress
  * @subpackage Plugin
  * @since 2.0
  *
  * @param string $file The filename of the plugin including the path.
- * @param callback $function the function hooked to the 'deactivate_PLUGIN' action.
+ * @param callback $function the function hooked to the 'activate_PLUGIN' action.
  */
 function register_deactivation_hook($file, $function) {
 	$file = plugin_basename($file);
@@ -748,7 +744,7 @@ function _wp_call_all_hook($args) {
  * @global array $wp_filter Storage for all of the filters and actions
  * @param string $tag Used in counting how many hooks were applied
  * @param callback $function Used for creating unique id
- * @param int|bool $priority Used in counting how many hooks were applied. If === false and $function is an object reference, we return the unique id only if it already has one, false otherwise.
+ * @param int|bool $priority Used in counting how many hooks were applied.  If === false and $function is an object reference, we return the unique id only if it already has one, false otherwise.
  * @return string|bool Unique ID for usage as array key or false if $priority === false and $function is an object reference, and it does not already have a unique id.
  */
 function _wp_filter_build_unique_id($tag, $function, $priority) {
@@ -785,6 +781,8 @@ function _wp_filter_build_unique_id($tag, $function, $priority) {
 		}
 	} else if ( is_string($function[0]) ) {
 		// Static Calling
-		return $function[0] . '::' . $function[1];
+		return $function[0].$function[1];
 	}
 }
+
+?>
