@@ -2896,13 +2896,6 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 			-moz-box-sizing: content-box;
 			-webkit-box-sizing: content-box;
 			box-sizing: content-box;
-			background-color: #f5f5f5;
-			background-image: -ms-linear-gradient(top, #ffffff, #f2f2f2);
-			background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
-			background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
-			background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f2f2f2));
-			background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
-			background-image: linear-gradient(top, #ffffff, #f2f2f2);
 		}
 
 		.button:hover {
@@ -2910,15 +2903,13 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 			border-color: #666;
 		}
 
-		.button:active {
-			background-image: -ms-linear-gradient(top, #f2f2f2, #ffffff);
-			background-image: -moz-linear-gradient(top, #f2f2f2, #ffffff);
-			background-image: -o-linear-gradient(top, #f2f2f2, #ffffff);
-			background-image: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#ffffff));
-			background-image: -webkit-linear-gradient(top, #f2f2f2, #ffffff);
-			background-image: linear-gradient(top, #f2f2f2, #ffffff);
+		.button {
+			background: #f2f2f2 url(<?php echo wp_guess_url(); ?>/wp-admin/images/white-grad.png) repeat-x scroll left top;
 		}
 
+		.button:active {
+			background: #eee url(<?php echo wp_guess_url(); ?>/wp-admin/images/white-grad-active.png) repeat-x scroll left top;
+		}
 		<?php if ( 'rtl' == $text_direction ) : ?>
 		body { font-family: Tahoma, Arial; }
 		<?php endif; ?>

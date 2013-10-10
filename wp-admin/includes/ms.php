@@ -385,11 +385,9 @@ function get_upload_space_available() {
  */
 function get_space_allowed() {
 	$space_allowed = get_option( 'blog_upload_space' );
-
-	if ( ! is_numeric( $space_allowed ) )
+	if ( $space_allowed === false )
 		$space_allowed = get_site_option( 'blog_upload_space' );
-
-	if ( empty( $space_allowed ) || ! is_numeric( $space_allowed ) )
+	if ( empty( $space_allowed ) || !is_numeric( $space_allowed ) )
 		$space_allowed = 50;
 
 	return $space_allowed;

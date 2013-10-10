@@ -196,8 +196,7 @@ class WP_Admin_Bar {
 
 	public function render() {
 		$root = $this->_bind();
-		if ( $root )
-			$this->_render( $root );
+		$this->_render( $root );
 	}
 
 	final protected function _bind() {

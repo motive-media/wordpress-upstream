@@ -487,15 +487,10 @@ class WP_User {
 	static function get_data_by( $field, $value ) {
 		global $wpdb;
 
-		if ( 'id' == $field ) {
-			// Make sure the value is numeric to avoid casting objects, for example,
-			// to int 1.
-			if ( ! is_numeric( $value ) )
-				return false;
+		if ( 'id' == $field )
 			$value = absint( $value );
-		} else {
+		else
 			$value = trim( $value );
-		}
 
 		if ( !$value )
 			return false;
